@@ -34,7 +34,7 @@ public class UpdateServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // TODO Auto-generated method stub
         String _token = (String)request.getParameter("_token");
-        if(_token != null || _token.equals(request.getSession().getId())){
+        if(_token != null && _token.equals(request.getSession().getId())){
             EntityManager em = DBUtil.createEntityManager();
 
             Message m = em.find(Message.class,(Integer)request.getSession().getAttribute("message_id"));

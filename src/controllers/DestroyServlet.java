@@ -1,7 +1,6 @@
 package controllers;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletException;
@@ -14,16 +13,16 @@ import models.Message;
 import utils.DBUtil;
 
 /**
- * Servlet implementation class CreateServlet
+ * Servlet implementation class DestroyServlet
  */
-@WebServlet("/create")
-public class CreateServlet extends HttpServlet {
+@WebServlet("/destroy")
+public class DestroyServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public CreateServlet() {
+    public DestroyServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -37,25 +36,19 @@ public class CreateServlet extends HttpServlet {
         if(_token != null && _token.equals(request.getSession().getId())){
             EntityManager em = DBUtil.createEntityManager();
 
-            Message m = new Message();
-
-            String title = request.getParameter("title");
-            m.setTitle(title);
-
-            String content = request.getParameter("content");
-            m.setContent(content);
-
-            Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-            m.setCreated_at(currentTime);
-            m.setUpdated_at(currentTime);
+            Message m = em.find(Message.class, (Integer)(request.getSession().getAttribute("message_id")));
 
             em.getTransaction().begin();
-            em.persist(m);
+            em.remove(m);
             em.getTransaction().commit();
             em.close();
 
+            request.getSession().removeAttribute("message_id");
+
             response.sendRedirect(request.getContextPath() + "/index");
         }
+
+
     }
 
 }
